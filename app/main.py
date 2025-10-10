@@ -38,6 +38,11 @@ setup_exception_handlers(app)
 app.include_router(auth_router)
 
 
+@app.get("/test")
+def home():
+    return {"status": "Server is running"}
+
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     error = exc.errors()[0]

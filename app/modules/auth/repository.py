@@ -50,3 +50,26 @@ class AuthRepository:
             self.db.rollback()
             logger.error(f"Database error during user creation: {str(e)}")
             raise DatabaseConnectionError()
+
+    def me(self, email: str):
+        try:
+            user = self.db.query(Users).filter(Users.email == email).first()
+            return user
+        except SQLAlchemyError as e:
+            self.db.rollback()
+            logger.error(f"Database error during user creation: {str(e)}")
+            raise DatabaseConnectionError()
+        
+    def change_password(self, email: str, password_hash: str):
+        try:
+            user = self.db.query(Users).filter(Users.email == email).first()
+            user.password = password_hash
+            self.db.commit()
+            self.db.refresh(user)
+            return user
+        except SQLAlchemyError as e:
+            self.db.rollback()
+            logger.error(f"Database error during user creation: {str(e)}")
+            raise DatabaseConnectionError()
+        
+    

@@ -40,3 +40,18 @@ class AuthService:
             return ApiResponse(
                 message="User login successfully", status_code=200, data=data
             )
+
+    def me(self, email: str):
+        print("S ==> ", email)
+        user = self.repo.me(email)
+        data = {
+            "id": user.id,
+            "fullName": user.fullName,
+            "email": user.email,
+            "role": user.role,
+            "created_at": user.created_at,
+            "updated_at": user.updated_at,
+        }
+        return ApiResponse(
+            message="User data", status_code=200, data=data
+        )

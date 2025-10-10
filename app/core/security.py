@@ -1,5 +1,6 @@
 import jwt
 import os
+from fastapi import HTTPException, status
 from dotenv import load_dotenv
 from argon2 import PasswordHasher
 from datetime import datetime, timedelta, UTC
@@ -40,3 +41,17 @@ def generate_token(
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, os.getenv("SECRET_KEY"), algorithm="HS256")
     return encoded_jwt
+
+
+def verify_token(token: str):
+    try:
+        decode = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms="HS256")
+        return decode
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired"
+        )
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+        )
