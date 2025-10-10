@@ -14,7 +14,13 @@ class Participants(base):
     __tablename__ = "participants"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    debate_id = Column(Integer, ForeignKey("debates.id", ondelete="CASCADE"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    debate_id = Column(
+        Integer, ForeignKey("debates.id", ondelete="CASCADE"), nullable=False
+    )
+    user_id = Column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
     stance = Column(Enum(Stance), nullable=False)
-    joined_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    joined_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )

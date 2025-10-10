@@ -20,15 +20,15 @@ from modules.auth.controller import router as auth_router
 
 
 @asynccontextmanager
-async def startup_event(app:FastAPI):
+async def startup_event(app: FastAPI):
     try:
         with engine.connect() as conn:
-            logger.info('✅ Database connected successfully!')
-        
+            logger.info("✅ Database connected successfully!")
+
         base.metadata.create_all(bind=engine)
         yield
     except Exception as e:
-        logger.error(f'❌ Database connection failed: {e}')
+        logger.error(f"❌ Database connection failed: {e}")
 
 
 app = FastAPI(lifespan=startup_event)
@@ -36,6 +36,7 @@ app = FastAPI(lifespan=startup_event)
 setup_exception_handlers(app)
 
 app.include_router(auth_router)
+
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -45,8 +46,5 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     message = error.get("msg", "Invalid input")
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={
-            "message": f"{field.capitalize()} {message}.",
-            "status_code": 422
-        }
+        content={"message": f"{field.capitalize()} {message}.", "status_code": 422},
     )
