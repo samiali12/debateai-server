@@ -32,3 +32,13 @@ class LoginResponse(BaseModel):
     refresh_token: str
     created_at: datetime
     updated_at: datetime
+
+class ChangePasswordRequest(BaseModel):
+    old_password: str
+    new_password: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    new_password: str

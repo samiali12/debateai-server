@@ -1,7 +1,10 @@
+import os
+import jwt
 from modules.auth.repository import AuthRepository
 from modules.auth.schemas import RegisterRequest, RegisterResponse, LoginResponse
 from core.security import password_hashing, generate_token
 from core.response import ApiResponse
+from tasks.email_tasks import send_reset_password_link
 
 
 class AuthService:
@@ -42,7 +45,6 @@ class AuthService:
             )
 
     def me(self, email: str):
-        print("S ==> ", email)
         user = self.repo.me(email)
         data = {
             "id": user.id,
@@ -52,6 +54,26 @@ class AuthService:
             "created_at": user.created_at,
             "updated_at": user.updated_at,
         }
-        return ApiResponse(
-            message="User data", status_code=200, data=data
-        )
+        return ApiResponse(message="User data", status_code=200, data=data)
+
+    def changed_password(self, email: str, old_password: str, new_password: str):
+        flag = self.repo.change_password(email, old_password, new_password)
+        if flag:
+            return ApiResponse(
+                message=f"Password changed successfully for user {email}"
+            )
+
+    def forget_password(self, email: str):
+        flag = self.repo.forget_password(email)
+        if flag:
+            token = jwt.encode(
+                {"email": email}, os.getenv("SECRET_KEY"), algorithm="HS256"
+            )
+            send_reset_password_link(email, token)
+            return ApiResponse(message="Password reset email sent successfully")
+
+    def reset_password(self, token: str, new_password: str):
+        decode = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms="HS256")
+        flag = self.repo.reset_password(decode['email'], new_password)
+        if flag:
+            return ApiResponse(message="Password reset successfully")
