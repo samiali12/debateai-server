@@ -5,8 +5,8 @@ from database.session import base
 
 class UserRole(enum.Enum):
     admin = "admin"
-    for_side = "for"
-    against_side = "against"
+    for_side = "for_side"
+    against_side = "against_side"
     neutral = "neutral"
 
 

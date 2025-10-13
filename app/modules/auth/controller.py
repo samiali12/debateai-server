@@ -7,7 +7,7 @@ from modules.auth.schemas import (
     ResetPasswordRequest,
 )
 from modules.auth.service import AuthService
-from core.middleware import is_authenticated
+from core.middleware import is_authenticated, get_refresh_token
 from datetime import datetime, UTC
 from database.redis import redis_client
 from core.response import ApiResponse
@@ -71,13 +71,22 @@ async def forgot_password(
     request: ForgotPasswordRequest,
     service: AuthService = Depends(get_auth_service),
 ):
+    print(request)
     return service.forget_password(request.email)
-
 
 @router.post("/reset-password")
 async def reset_password(
     request: ResetPasswordRequest,
-    token: str,
     service: AuthService = Depends(get_auth_service),
 ):
-    return service.reset_password(token, request.new_password)
+    return service.reset_password(request.token, request.newPassword)
+
+
+@router.get("/refresh-token")
+async def refresh_token(
+    user: dict = Depends(get_refresh_token),
+    service: AuthService = Depends(get_auth_service),
+):
+    return service.refresh_token(
+        user["id"], user["fullName"], user["email"], user["role"], user["token"]
+    )

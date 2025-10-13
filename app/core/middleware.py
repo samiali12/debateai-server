@@ -22,3 +22,15 @@ def is_authenticated(token: str = Depends(oauth2_scheme)):
         )
     payload.update({"token": token})
     return payload
+
+
+def get_refresh_token(token: str = Depends(oauth2_scheme)):
+    if not isinstance(token, str) or token.startswith("Depends"):
+        return
+    payload = verify_token(token)
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
+        )
+    payload.update({"token": token})
+    return payload

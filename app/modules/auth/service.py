@@ -2,9 +2,11 @@ import os
 import jwt
 from modules.auth.repository import AuthRepository
 from modules.auth.schemas import RegisterRequest, RegisterResponse, LoginResponse
-from core.security import password_hashing, generate_token
+from core.security import password_hashing, generate_token, generate_refresh_token
 from core.response import ApiResponse
 from tasks.email_tasks import send_reset_password_link
+from core.security import verify_token
+from database.models.users import UserRole
 
 
 class AuthService:
@@ -14,11 +16,12 @@ class AuthService:
     def register(self, data: RegisterRequest) -> RegisterResponse:
         hash = password_hashing(data.password)
         user = self.repo.create_user(data.fullName, data.email, hash, data.role)
+        print(f"user.role repr: {repr(user.role)}")
         return RegisterResponse(
             id=user.id,
             fullName=user.fullName,
             email=user.email,
-            role=user.role,
+            role=user.role.value,
             created_at=user.created_at,
             updated_at=user.updated_at,
         )
@@ -27,7 +30,7 @@ class AuthService:
         user = self.repo.login_user(email, password)
         if user:
             access_token = generate_token(user.id, user.fullName, user.email, user.role)
-            refresh_token = generate_token(
+            refresh_token = generate_refresh_token(
                 user.id, user.fullName, user.email, user.role
             )
             data = {
@@ -74,6 +77,23 @@ class AuthService:
 
     def reset_password(self, token: str, new_password: str):
         decode = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms="HS256")
-        flag = self.repo.reset_password(decode['email'], new_password)
+        flag = self.repo.reset_password(decode["email"], new_password)
         if flag:
             return ApiResponse(message="Password reset successfully")
+
+    def refresh_token(
+        self,
+        id: int,
+        fullName: str,
+        email: str,
+        role: str,
+        refresh_token: str,
+    ):
+        flag = verify_token(refresh_token)
+        if flag:
+            access_token = generate_refresh_token(id, fullName, email, role)
+            new_refresh_token = generate_refresh_token(id, fullName, email, role)
+            return ApiResponse(
+                message="successfully re generate access and refresh token",
+                data={"access_token": access_token, "refresh_token": new_refresh_token},
+            )
