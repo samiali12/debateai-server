@@ -84,3 +84,10 @@ class DebateService:
                     self._disconnect(room_id, ws)
                 except Exception:
                     pass
+
+    def save_argument(self, debate_id: int, user_id: int, role: str, content: str):
+        argument = self.repo.save_argument(debate_id, user_id, role, content)
+        if argument:
+            return ApiResponse(
+                success=True, message="Argument saved successfully", data=argument
+            )

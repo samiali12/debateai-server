@@ -1,9 +1,11 @@
 from database.session import session
 from database.models.debates import Debates
+from database.models.arguments import Arguments
 from sqlalchemy.exc import SQLAlchemyError
 from core.logger import logger
 from core.exceptions import DatabaseConnectionError
 from modules.debates.schemas import DebateResponse
+from fastapi import HTTPException
 
 
 class DebateRepository:
@@ -83,4 +85,22 @@ class DebateRepository:
         except SQLAlchemyError as e:
             self.db.rollback()
             logger.error(f"Database error during deleting debate: {str(e)}")
+            raise DatabaseConnectionError()
+
+    def save_argument(self, debate_id: int, user_id: int, role: str, content: str):
+        try:
+            debate = self.db.query(Debates).filter(Debates.id == debate_id).first()
+            if not debate:
+                raise HTTPException(status_code=404, detail="Debate not found")
+            argument = Arguments(
+                debate_id=debate_id, user_id=user_id, role=role, content=content
+            )
+            self.db.add(argument)
+            self.db.commit()
+            self.db.refresh(argument)
+            return argument
+
+        except SQLAlchemyError as e:
+            self.db.rollback()
+            logger.error(f"Database error during saving argument: {str(e)}")
             raise DatabaseConnectionError()

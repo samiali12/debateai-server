@@ -27,8 +27,9 @@ class DebateResponse(BaseModel):
 
 class WSMessage(BaseModel):
     type: str
-    user: Optional[str] = None
-    role: Optional[str] = None
-    content: Optional[str] = None
+    debate_id: int 
+    user_id: int 
+    role: str 
+    content: str 
     timestamp: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
