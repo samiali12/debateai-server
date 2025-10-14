@@ -8,6 +8,10 @@ class DebateCreate(BaseModel):
     description: Optional[str] = None
 
 
+class DebateUpdateStatus(BaseModel):
+    status: str
+
+
 class DebateResponse(BaseModel):
     id: int
     title: str
