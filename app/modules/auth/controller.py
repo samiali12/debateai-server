@@ -14,10 +14,8 @@ from core.response import ApiResponse
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
-
 def get_auth_service():
     return AuthService()
-
 
 @router.post("/register")
 async def register_user(

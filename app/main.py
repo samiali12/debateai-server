@@ -18,6 +18,7 @@ from database.models.participants import Participants
 from database.models.summaries import Summaries
 
 from modules.auth.controller import router as auth_router
+from modules.debates.controller import router as debates_router
 
 
 @asynccontextmanager
@@ -50,6 +51,7 @@ app.add_middleware(
 setup_exception_handlers(app)
 
 app.include_router(auth_router)
+app.include_router(debates_router)
 
 
 @app.get("/test")
