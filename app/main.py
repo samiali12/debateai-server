@@ -19,6 +19,7 @@ from database.models.summaries import Summaries
 
 from modules.auth.controller import router as auth_router
 from modules.debates.controller import router as debates_router
+from modules.argument_segmentation.controller import router as argumentaion_router
 
 
 @asynccontextmanager
@@ -52,6 +53,7 @@ setup_exception_handlers(app)
 
 app.include_router(auth_router)
 app.include_router(debates_router)
+app.include_router(argumentaion_router)
 
 
 @app.get("/test")
