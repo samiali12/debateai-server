@@ -6,7 +6,10 @@ from core.security import password_hashing, generate_token, generate_refresh_tok
 from core.response import ApiResponse
 from tasks.email_tasks import send_reset_password_link
 from core.security import verify_token
-from database.models.users import UserRole
+from fastapi.responses import JSONResponse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class AuthService:
@@ -15,8 +18,7 @@ class AuthService:
 
     def register(self, data: RegisterRequest) -> RegisterResponse:
         hash = password_hashing(data.password)
-        user = self.repo.create_user(data.fullName, data.email, hash, data.role)
-        print(f"user.role repr: {repr(user.role)}")
+        user = self.repo.create_user(data.fullName, data.email, hash)
         return RegisterResponse(
             id=user.id,
             fullName=user.fullName,
@@ -33,19 +35,41 @@ class AuthService:
             refresh_token = generate_refresh_token(
                 user.id, user.fullName, user.email, user.role
             )
-            data = {
-                "id": user.id,
-                "fullName": user.fullName,
-                "email": user.email,
-                "role": user.role,
-                "access_token": access_token,
-                "refresh_token": refresh_token,
-                "created_at": user.created_at,
-                "updated_at": user.updated_at,
-            }
-            return ApiResponse(
-                message="User login successfully", status_code=200, data=data
+            response = JSONResponse(
+                content={
+                    "message": "User login successfully",
+                    "status_code": 200,
+                    "data": {
+                        "id": user.id,
+                        "fullName": user.fullName,
+                        "email": user.email,
+                        "role": user.role.value,
+                        "created_at": (
+                            user.created_at.isoformat() if user.created_at else None
+                        ),
+                        "updated_at": (
+                            user.updated_at.isoformat() if user.updated_at else None
+                        ),
+                    },
+                },
             )
+            response.set_cookie(
+                key="access_token",
+                value=access_token,
+                httponly=True,
+                secure=False if os.getenv("ENVIROMENT") == "development" else True,
+                samesite="lax" if os.getenv("ENVIROMENT") == "development" else "none",
+                max_age=3600,
+            )
+            response.set_cookie(
+                key="refresh_token",
+                value=refresh_token,
+                httponly=True,
+                secure=False if os.getenv("ENVIROMENT") == "development" else True,
+                samesite="lax" if os.getenv("ENVIROMENT") == "development" else "none",
+                max_age=7 * 24 * 3600,
+            )
+            return response
 
     def me(self, email: str):
         user = self.repo.me(email)

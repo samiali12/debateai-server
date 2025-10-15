@@ -15,9 +15,9 @@ class AuthRepository:
     def __init__(self):
         self.db = session()
 
-    def create_user(self, fullName, email, password, role):
+    def create_user(self, fullName, email, password):
         try:
-            user = Users(fullName=fullName, email=email, password=password, role=role)
+            user = Users(fullName=fullName, email=email, password=password)
             self.db.add(user)
             self.db.commit()
             self.db.refresh(user)

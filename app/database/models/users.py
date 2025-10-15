@@ -5,9 +5,7 @@ from database.session import base
 
 class UserRole(enum.Enum):
     admin = "admin"
-    for_side = "for_side"
-    against_side = "against_side"
-    neutral = "neutral"
+    user = "user"
 
 
 class Users(base):
@@ -16,7 +14,7 @@ class Users(base):
     fullName = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password = Column(String(100), nullable=False)
-    role = Column(Enum(UserRole), default=UserRole.neutral, nullable=False)
+    role = Column(Enum(UserRole), default=UserRole.user, nullable=False)
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

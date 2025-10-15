@@ -8,6 +8,11 @@ class DebateStatus(enum.Enum):
     completed = "completed"
     archived = "archived"
 
+class UserRole(enum.Enum):
+    for_side = "for_side"
+    against_side = "against_side"
+    neutral = "neutral"
+
 
 class Debates(base):
     __tablename__ = "debates"
