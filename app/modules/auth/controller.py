@@ -32,6 +32,14 @@ async def login_user(
 ):
     return service.login(request.email, request.password)
 
+@router.get("/refresh-token")
+async def refresh_token(
+    user: dict = Depends(get_refresh_token),
+    service: AuthService = Depends(get_auth_service),
+):
+    return service.generate_refresh_token(
+        user["id"], user["fullName"], user["email"], user["role"], user["token"]
+    )
 
 @router.get("/logout")
 async def logout(user: dict = Depends(is_authenticated)):
@@ -81,12 +89,3 @@ async def reset_password(
 ):
     return service.reset_password(request.token, request.newPassword)
 
-
-@router.get("/refresh-token")
-async def refresh_token(
-    user: dict = Depends(get_refresh_token),
-    service: AuthService = Depends(get_auth_service),
-):
-    return service.refresh_token(
-        user["id"], user["fullName"], user["email"], user["role"], user["token"]
-    )

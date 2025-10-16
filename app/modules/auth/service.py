@@ -105,7 +105,7 @@ class AuthService:
         if flag:
             return ApiResponse(message="Password reset successfully")
 
-    def refresh_token(
+    def generate_refresh_token(
         self,
         id: int,
         fullName: str,
@@ -115,9 +115,29 @@ class AuthService:
     ):
         flag = verify_token(refresh_token)
         if flag:
-            access_token = generate_refresh_token(id, fullName, email, role)
+            access_token = generate_token(id, fullName, email, role)
             new_refresh_token = generate_refresh_token(id, fullName, email, role)
-            return ApiResponse(
-                message="successfully re generate access and refresh token",
-                data={"access_token": access_token, "refresh_token": new_refresh_token},
+            response = JSONResponse(
+                content={
+                    "message": "token generated successfully",
+                    "status_code": 200,
+                    "data": None,
+                },
             )
+            response.set_cookie(
+                key="access_token",
+                value=access_token,
+                httponly=True,
+                secure=False if os.getenv("ENVIROMENT") == "development" else True,
+                samesite="lax" if os.getenv("ENVIROMENT") == "development" else "none",
+                max_age=3600,
+            )
+            response.set_cookie(
+                key="refresh_token",
+                value=new_refresh_token,
+                httponly=True,
+                secure=False if os.getenv("ENVIROMENT") == "development" else True,
+                samesite="lax" if os.getenv("ENVIROMENT") == "development" else "none",
+                max_age=7 * 24 * 3600,
+            )
+            return response
