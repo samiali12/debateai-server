@@ -17,7 +17,9 @@ async def create_debate(
     user: dict = Depends(is_authenticated),
 ):
     userId = user.get("id")
-    return debate_service.create_debate(request.title, request.description, userId)
+    return debate_service.create_debate(
+        userId, request.title, request.description, request.role
+    )
 
 
 @router.get("/")
@@ -58,7 +60,7 @@ async def delete_debate(
 async def debate_ws_endpoint(
     websocket: WebSocket,
     room_id: str,
-    #user: dict = Depends(is_authenticated),
+    # user: dict = Depends(is_authenticated),
 ):
     await debate_service.connect(room_id, websocket)
     try:
@@ -76,9 +78,7 @@ async def debate_ws_endpoint(
                 }
                 await websocket.send_text(json.dumps(error))
                 continue
-
-            print("data ==> ", message)
-
+            
             if message.type == "argument":
                 debate_service.save_argument(
                     message.debate_id, message.user_id, message.role, message.content

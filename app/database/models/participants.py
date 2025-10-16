@@ -4,7 +4,7 @@ from database.session import base
 import enum
 
 
-class Stance(enum.Enum):
+class Role(enum.Enum):
     for_side = "for"
     against_side = "against"
     neutral = "neutral"
@@ -20,7 +20,7 @@ class Participants(base):
     user_id = Column(
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    stance = Column(Enum(Stance), nullable=False)
+    role = Column(Enum(Role), nullable=False)
     joined_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

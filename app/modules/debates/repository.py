@@ -1,5 +1,6 @@
 from database.session import session
 from database.models.debates import Debates
+from database.models.participants import Participants
 from database.models.arguments import Arguments
 from sqlalchemy.exc import SQLAlchemyError
 from core.logger import logger
@@ -12,7 +13,7 @@ class DebateRepository:
     def __init__(self):
         self.db = session()
 
-    def create_debate(self, title: str, description: str, created_by: int):
+    def create_debate(self, created_by: int, title: str, description: str, role: str):
         try:
             debate = Debates(
                 title=title, description=description, created_by=created_by
@@ -21,8 +22,14 @@ class DebateRepository:
             self.db.commit()
             self.db.refresh(debate)
 
-            formatted_data = debate.__dict__.copy()
-            formatted_data["status"] = formatted_data["status"].value
+            participant = Participants(
+                debate_id=debate.id, user_id=created_by, role="neutral"
+            )
+
+            self.db.add(participant)
+            self.db.commit()
+
+            formatted_data = debate.to_dict()
 
             return DebateResponse(**formatted_data)
 

@@ -5,7 +5,8 @@ from typing import Optional, Dict, Any
 
 class DebateCreate(BaseModel):
     title: str
-    description: Optional[str] = None
+    description: str
+    role: str
 
 
 class DebateUpdateStatus(BaseModel):

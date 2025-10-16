@@ -8,6 +8,7 @@ class DebateStatus(enum.Enum):
     completed = "completed"
     archived = "archived"
 
+
 class UserRole(enum.Enum):
     for_side = "for_side"
     against_side = "against_side"
@@ -30,3 +31,14 @@ class Debates(base):
         onupdate=func.now(),
         nullable=False,
     )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "created_by": self.created_by,
+            "status": self.status.value,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+        }

@@ -11,8 +11,8 @@ class DebateService:
         self.active_connections: Dict[str, Set[WebSocket]] = {}
         self.repo = DebateRepository()
 
-    def create_debate(self, title: str, description: str, created_by: int):
-        debate = self.repo.create_debate(title, description, created_by)
+    def create_debate(self, created_by: int, title: str, description: str, role: str):
+        debate = self.repo.create_debate(created_by, title, description, role)
         return ApiResponse(
             success=201, message="Debate created successfully", data=debate
         )
