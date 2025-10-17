@@ -4,7 +4,12 @@ from fastapi import WebSocket, WebSocketDisconnect
 from core.middleware import is_authenticated
 from modules.debates.service import DebateService
 from modules.debates.schemas import WSMessage
-from modules.debates.schemas import DebateCreate, DebateUpdateStatus, DebateUpdate
+from modules.debates.schemas import (
+    DebateCreate,
+    DebateUpdateStatus,
+    DebateUpdate,
+    JoinDebateRequest,
+)
 
 router = APIRouter(prefix="/debates", tags=["debates"])
 
@@ -30,6 +35,23 @@ async def update_debate(
     return debate_service.update_debate(
         id, request.title, request.description, request.role
     )
+
+
+@router.patch("/{id}/join")
+async def joined_debate(
+    id: int,
+    request: JoinDebateRequest,
+    user: dict = Depends(is_authenticated),
+):
+    user_id = user["id"]
+    return debate_service.join_debate(
+        debate_id=id, partcipant_id=user_id, role=request.role
+    )
+
+
+@router.get("/{debate_id}/participants")
+async def get_participants(debate_id: int):
+    return debate_service.get_participants_list(debate_id)
 
 
 @router.get("/")

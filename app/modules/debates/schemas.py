@@ -19,6 +19,10 @@ class DebateUpdateStatus(BaseModel):
     status: str
 
 
+class JoinDebateRequest(BaseModel):
+    role: str
+
+
 class DebateResponse(BaseModel):
     id: int
     title: str
