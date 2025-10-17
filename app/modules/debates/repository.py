@@ -23,13 +23,57 @@ class DebateRepository:
             self.db.refresh(debate)
 
             participant = Participants(
-                debate_id=debate.id, user_id=created_by, role="neutral"
+                debate_id=debate.id, user_id=created_by, role=role
             )
 
             self.db.add(participant)
             self.db.commit()
 
             formatted_data = debate.to_dict()
+
+            return DebateResponse(**formatted_data)
+
+        except SQLAlchemyError as e:
+            self.db.rollback()
+            logger.error(f"Database error during debate creation: {str(e)}")
+            raise DatabaseConnectionError()
+
+    def update_debate(self, debate_id: int, title: str, description: str, role: str):
+        try:
+            existing_dabate = (
+                self.db.query(Debates).filter(Debates.id == debate_id).first()
+            )
+            if not existing_dabate:
+                raise HTTPException(status_code=404, detail="Debate not found")
+
+            if title != "":
+                existing_dabate.title = title
+            elif description != "":
+                existing_dabate.description = description
+
+            self.db.commit()
+            self.db.refresh(existing_dabate)
+
+            existing_participants = (
+                self.db.query(Participants)
+                .filter(
+                    (Participants.user_id == existing_dabate.created_by)
+                    and (Debates.id == existing_dabate.id)
+                )
+                .first()
+            )
+
+            if not existing_participants:
+                raise HTTPException(
+                    status_code=404, detail="participants not found in debate"
+                )
+
+            existing_participants.role = role
+
+            self.db.commit()
+            self.db.refresh(existing_participants)
+
+            formatted_data = existing_dabate.to_dict()
 
             return DebateResponse(**formatted_data)
 

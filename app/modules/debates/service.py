@@ -17,6 +17,12 @@ class DebateService:
             success=201, message="Debate created successfully", data=debate
         )
 
+    def update_debate(self, debate_id: int, title: str, description: str, role: str):
+        debate = self.repo.update_debate(debate_id, title, description, role)
+        return ApiResponse(
+            success=201, message="Debate updated successfully", data=debate
+        )
+
     def get_debate(self, debate_id: int):
         debate = self.repo.get_debate_by_id(debate_id)
         if debate:

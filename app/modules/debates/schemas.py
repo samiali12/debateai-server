@@ -9,6 +9,12 @@ class DebateCreate(BaseModel):
     role: str
 
 
+class DebateUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    role: Optional[str] = None
+
+
 class DebateUpdateStatus(BaseModel):
     status: str
 
@@ -28,9 +34,9 @@ class DebateResponse(BaseModel):
 
 class WSMessage(BaseModel):
     type: str
-    debate_id: int 
-    user_id: int 
-    role: str 
-    content: str 
+    debate_id: int
+    user_id: int
+    role: str
+    content: str
     timestamp: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None

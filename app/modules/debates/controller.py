@@ -4,7 +4,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 from core.middleware import is_authenticated
 from modules.debates.service import DebateService
 from modules.debates.schemas import WSMessage
-from modules.debates.schemas import DebateCreate, DebateUpdateStatus
+from modules.debates.schemas import DebateCreate, DebateUpdateStatus, DebateUpdate
 
 router = APIRouter(prefix="/debates", tags=["debates"])
 
@@ -19,6 +19,16 @@ async def create_debate(
     userId = user.get("id")
     return debate_service.create_debate(
         userId, request.title, request.description, request.role
+    )
+
+
+@router.patch("/{id}")
+async def update_debate(
+    request: DebateUpdate,
+    user: dict = Depends(is_authenticated),
+):
+    return debate_service.update_debate(
+        id, request.title, request.description, request.role
     )
 
 
@@ -78,7 +88,7 @@ async def debate_ws_endpoint(
                 }
                 await websocket.send_text(json.dumps(error))
                 continue
-            
+
             if message.type == "argument":
                 debate_service.save_argument(
                     message.debate_id, message.user_id, message.role, message.content
