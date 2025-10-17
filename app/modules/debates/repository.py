@@ -160,8 +160,6 @@ class DebateRepository:
             .filter(Participants.debate_id == debate_id)
             .all()
         )
-        print("p ==> ", participants)
-
         format_participants = [
             {
                 "participantId": p[0],
