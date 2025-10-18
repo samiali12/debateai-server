@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import HTTPException, status
 from core.security import verify_token
 from database.redis import redis_client
 from fastapi import Request
@@ -12,12 +12,19 @@ def is_authenticated(request: Request):
         )
 
     if not isinstance(token, str):
-        return
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+        )
+
     payload = verify_token(token)
+
     if not payload:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials",
         )
+
     payload.update({"token": token})
     return payload
 
@@ -25,7 +32,11 @@ def is_authenticated(request: Request):
 def get_refresh_token(request: Request):
     token = request.cookies.get("refresh_token")
     if not isinstance(token, str):
-        return
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+        )
+
     payload = verify_token(token)
     if not payload:
         raise HTTPException(

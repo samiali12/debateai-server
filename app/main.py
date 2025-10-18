@@ -19,7 +19,11 @@ from database.models.summaries import Summaries
 
 from modules.auth.controller import router as auth_router
 from modules.debates.controller import router as debates_router
+<<<<<<< HEAD
 from modules.argument_segmentation.controller import router as argumentaion_router
+=======
+from modules.arguments.controller import router as arguments_router
+>>>>>>> debates
 
 
 @asynccontextmanager
@@ -38,8 +42,8 @@ app = FastAPI(lifespan=startup_event)
 
 origins = [
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -50,10 +54,13 @@ app.add_middleware(
 )
 
 setup_exception_handlers(app)
-
 app.include_router(auth_router)
 app.include_router(debates_router)
+<<<<<<< HEAD
 app.include_router(argumentaion_router)
+=======
+app.include_router(arguments_router)
+>>>>>>> debates
 
 
 @app.get("/test")

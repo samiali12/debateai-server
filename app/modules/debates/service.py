@@ -11,11 +11,26 @@ class DebateService:
         self.active_connections: Dict[str, Set[WebSocket]] = {}
         self.repo = DebateRepository()
 
-    def create_debate(self, title: str, description: str, created_by: int):
-        debate = self.repo.create_debate(title, description, created_by)
+    def create_debate(self, created_by: int, title: str, description: str, role: str):
+        debate = self.repo.create_debate(created_by, title, description, role)
         return ApiResponse(
             success=201, message="Debate created successfully", data=debate
         )
+
+    def update_debate(self, debate_id: int, title: str, description: str, role: str):
+        debate = self.repo.update_debate(debate_id, title, description, role)
+        return ApiResponse(
+            success=200, message="Debate updated successfully", data=debate
+        )
+
+    def join_debate(self, debate_id: int, partcipant_id: int, role: str):
+        flag = self.repo.join_debate(debate_id, partcipant_id, role)
+        if flag:
+            return ApiResponse(success=200, message="Successfully Joined", data=None)
+
+    def get_participants_list(self, debate_id: int):
+        participants = self.repo.get_participants_lists(debate_id)
+        return ApiResponse(status_code=200, message="Lists", data=participants)
 
     def get_debate(self, debate_id: int):
         debate = self.repo.get_debate_by_id(debate_id)
