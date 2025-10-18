@@ -100,6 +100,7 @@ async def debate_ws_endpoint(
             raw = await websocket.receive_text()
             try:
                 json_data = json.loads(raw)
+                print(json_data)
                 message = WSMessage(**json_data)
 
             except json.JSONDecodeError as e:

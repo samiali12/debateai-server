@@ -42,5 +42,6 @@ class WSMessage(BaseModel):
     user_id: int
     role: str
     content: str
+    fullName: str
     timestamp: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
