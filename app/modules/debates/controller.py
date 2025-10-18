@@ -91,11 +91,8 @@ async def delete_debate(
 @router.websocket("/ws/debates/{debate_id}")
 async def debate_ws_endpoint(
     websocket: WebSocket,
-<<<<<<< HEAD
     room_id: str,
-=======
     debate_id: str,
->>>>>>> debates
     # user: dict = Depends(is_authenticated),
 ):
     await debate_service.connect(debate_id, websocket)
