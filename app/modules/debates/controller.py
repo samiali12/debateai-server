@@ -92,7 +92,6 @@ async def delete_debate(
 async def debate_ws_endpoint(
     websocket: WebSocket,
     debate_id: str,
-    # user: dict = Depends(is_authenticated),
 ):
     await debate_service.connect(debate_id, websocket)
     try:
@@ -100,7 +99,7 @@ async def debate_ws_endpoint(
             raw = await websocket.receive_text()
             try:
                 json_data = json.loads(raw)
-                print(json_data)
+                print(f"json ==> {json_data}")
                 message = WSMessage(**json_data)
 
             except json.JSONDecodeError as e:
