@@ -44,4 +44,3 @@ class WSMessage(BaseModel):
     content: str
     fullName: str
     timestamp: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
