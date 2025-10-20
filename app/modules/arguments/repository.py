@@ -4,7 +4,6 @@ from database.models.debates import Debates
 from database.models.arguments import Arguments
 from database.models.users import Users
 
-
 class ArgumentsRepository:
     def __init__(self):
         self.db = session()

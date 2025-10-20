@@ -22,10 +22,6 @@ class ArgumentService:
             }
             for arg in arguments
         ]
-        text = self.segmentation_service.segment_arguments(
-            text="Electric cars are eco-friendly. However, gas cars are more affordable."
-        )
-        print(text)
         return ApiResponse(
             status_code=200, message="Arguments list", data=formatted_data
         )
