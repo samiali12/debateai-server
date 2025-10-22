@@ -1,13 +1,7 @@
 from sqlalchemy import Column, Integer, ForeignKey, Text, DateTime, Float, Enum
 from sqlalchemy.sql import func
 from database.session import base
-import enum
-
-
-class ArgumentRole(enum.Enum):
-    for_side = "for"
-    against_side = "against"
-    neutral = "neutral"
+from database.models.enums import DebateRole
 
 
 class Arguments(base):
@@ -20,9 +14,15 @@ class Arguments(base):
     user_id = Column(
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    role = Column(Enum(ArgumentRole), nullable=False)
+    role = Column(Enum(DebateRole), nullable=False)
     content = Column(Text, nullable=False)
     ai_score = Column(Float, nullable=True)
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
     )

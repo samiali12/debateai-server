@@ -1,11 +1,27 @@
 from modules.arguments.repository import ArgumentsRepository
 from core.response import ApiResponse
+from modules.argument_segmentation.service import ArgumentSegmentationService
 
 
 class ArgumentService:
     def __init__(self):
         self.repo = ArgumentsRepository()
+        self.segmentation_service = ArgumentSegmentationService()
 
     def get_arguments(self, debate_id: int):
-        data = self.repo.get_arguments(debate_id)
-        return ApiResponse(status_code=200, message="Arguments list", data=data)
+        arguments = self.repo.get_arguments(debate_id)
+        formatted_data = [
+            {
+                "type": "argument",
+                "debate_id": arg.debate_id,
+                "user_id": arg.user_id,
+                "fullName": arg.fullName,
+                "role": arg.role,
+                "content": arg.content,
+                "timestamp": arg.timestamp.isoformat() if arg.timestamp else None,
+            }
+            for arg in arguments
+        ]
+        return ApiResponse(
+            status_code=200, message="Arguments list", data=formatted_data
+        )
