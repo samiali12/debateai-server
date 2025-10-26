@@ -1,12 +1,9 @@
 from modules.arguments.repository import ArgumentsRepository
 from core.response import ApiResponse
-from modules.argument_segmentation.service import ArgumentSegmentationService
-
 
 class ArgumentService:
     def __init__(self):
         self.repo = ArgumentsRepository()
-        self.segmentation_service = ArgumentSegmentationService()
 
     def get_arguments(self, debate_id: int):
         arguments = self.repo.get_arguments(debate_id)

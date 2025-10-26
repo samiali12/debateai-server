@@ -8,6 +8,7 @@ from core.logger import logger
 from core.exceptions import DatabaseConnectionError
 from modules.debates.schemas import DebateResponse
 from fastapi import HTTPException
+from app.utils.constant import MAX_PARTICIPANTS, ROLE_LIMITS
 
 
 class DebateRepository:
@@ -98,13 +99,36 @@ class DebateRepository:
 
             existing_participant = (
                 self.db.query(Participants)
-                .filter(Participants.user_id == partcipant_id)
+                .filter(
+                    (Participants.user_id == partcipant_id)
+                    & (Participants.debate_id == existing_dabate.id)
+                )
                 .first()
             )
 
             if existing_participant:
                 raise HTTPException(
                     status_code=409, detail="Participant is already exists"
+                )
+
+            participants_list = (
+                self.db.query(Participants)
+                .filter(Participants.debate_id == existing_dabate.id)
+                .all()
+            )
+
+            if len(participants_list) == MAX_PARTICIPANTS:
+                raise HTTPException(status_code=400, detail="Debate is already full")
+
+            role_count = (
+                self.db.query(Participants)
+                .filter(Participants.debate_id == debate_id, Participants.role == role)
+                .count()
+            )
+
+            if role_count >= ROLE_LIMITS.get(role, 0):
+                raise HTTPException(
+                    status_code=400, detail=f"No more spots for role '{role}'"
                 )
 
             new_participant = Participants(
