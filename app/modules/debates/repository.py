@@ -126,6 +126,9 @@ class DebateRepository:
                 .count()
             )
 
+            print("Total role ==> ", role_count)
+            print("ss ==> ", ROLE_LIMITS.get(role, 0))
+
             if role_count >= ROLE_LIMITS.get(role, 0):
                 raise HTTPException(
                     status_code=400, detail=f"No more spots for role '{role}'"

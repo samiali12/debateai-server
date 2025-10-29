@@ -1,7 +1,7 @@
-MAX_PARTICIPANTS = 3
+MAX_PARTICIPANTS = 10
 
 ROLE_LIMITS = {
-    "for": 4,
-    "against": 4,
-    "neutral": 2,
+    "for_side": 4,
+    "against_side": 4,
+    "neutral_side": 2,
 }
