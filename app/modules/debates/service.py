@@ -24,7 +24,6 @@ class DebateService:
         )
 
     def join_debate(self, debate_id: int, partcipant_id: int, role: str):
-        print("role ==> ", role)
         flag = self.repo.join_debate(debate_id, partcipant_id, role)
         if flag:
             return ApiResponse(success=200, message="Successfully Joined", data=None)
