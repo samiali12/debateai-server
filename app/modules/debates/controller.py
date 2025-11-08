@@ -91,9 +91,9 @@ async def delete_debate(
 @router.websocket("/ws/debates/{debate_id}")
 async def debate_ws_endpoint(
     websocket: WebSocket,
-    room_id: str,
     debate_id: str,
 ):
+    print("WebSocket connection request received")
     await debate_service.connect(debate_id, websocket)
     try:
         while True:

@@ -4,11 +4,18 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem import WordNetLemmatizer
 
-for pkg in ["punkt", "stopwords", "wordnet"]:
+nltk_resources = {
+    "punkt": "tokenizers/punkt",
+    "stopwords": "corpora/stopwords",
+    "wordnet": "corpora/wordnet",
+}
+
+for pkg, resource in nltk_resources.items():
     try:
-        nltk.data.find(f"corpora/{pkg}")
+        nltk.data.find(resource)
     except LookupError:
-        nltk.download(pkg)
+        # download quietly and only when resource is missing
+        nltk.download(pkg, quiet=True)
 
 
 class ArgumentSegmentationService:
