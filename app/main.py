@@ -21,6 +21,7 @@ from modules.auth.controller import router as auth_router
 from modules.debates.controller import router as debates_router
 from modules.arguments.controller import router as arguments_router
 from modules.argument_segmentation.controller import router as segment_router
+from modules.summerization.controller import router as summarization_router
 
 
 @asynccontextmanager
@@ -55,6 +56,8 @@ app.include_router(auth_router)
 app.include_router(debates_router)
 app.include_router(arguments_router)
 app.include_router(segment_router)
+app.include_router(summarization_router)
+
 
 @app.get("/test")
 def home():
