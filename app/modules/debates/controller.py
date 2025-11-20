@@ -11,11 +11,13 @@ from modules.debates.schemas import (
     JoinDebateRequest,
 )
 from modules.tone_civility.service import ToneCivilityService
+from modules.ai_moderator.service import AiModeratorService
 
 router = APIRouter(prefix="/debates", tags=["debates"])
 
 debate_service = DebateService()
 tone_civility_service = ToneCivilityService()
+ai_moderator_service = AiModeratorService()
 
 
 @router.post("/")
@@ -117,10 +119,30 @@ async def debate_ws_endpoint(
                 argument = debate_service.save_argument(
                     message.debate_id, message.user_id, message.role, message.content
                 )
+
                 civility = tone_civility_service.analyze_tone_civility(
                     argument.id, message.content
                 )
+
+                ai_analysis = None
+                if civility.toxicity_score > 0.50:
+                    ai_analysis = ai_moderator_service.analyze_text(message.content)
+
                 await debate_service.broadcast(debate_id, message.dict())
+
+                if civility.toxicity_score > 0.50:
+                    await debate_service.broadcast(
+                        debate_id,
+                        {
+                            "type": "ai_moderator",
+                            "argument_id": argument.id,
+                            "temp_id": message.temp_id,
+                            "toxicity_score": ai_analysis.get("toxicity_score"),
+                            "flag": ai_analysis.get("flag"),
+                            "fairness_warning": ai_analysis.get("warning"),
+                        },
+                    )
+
                 await debate_service.broadcast(
                     debate_id,
                     {

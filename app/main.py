@@ -24,6 +24,7 @@ from modules.arguments.controller import router as arguments_router
 from modules.argument_segmentation.controller import router as segment_router
 from modules.summerization.controller import router as summarization_router
 from modules.tone_civility.controller import router as tone_civility_router
+from modules.ai_moderator.controller import router as ai_moderator_router
 
 
 @asynccontextmanager
@@ -60,6 +61,7 @@ app.include_router(arguments_router)
 app.include_router(segment_router)
 app.include_router(summarization_router)
 app.include_router(tone_civility_router)
+app.include_router(ai_moderator_router)
 
 
 @app.get("/test")
