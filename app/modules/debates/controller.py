@@ -10,10 +10,12 @@ from modules.debates.schemas import (
     DebateUpdate,
     JoinDebateRequest,
 )
+from modules.tone_civility.service import ToneCivilityService
 
 router = APIRouter(prefix="/debates", tags=["debates"])
 
 debate_service = DebateService()
+tone_civility_service = ToneCivilityService()
 
 
 @router.post("/")
@@ -112,10 +114,24 @@ async def debate_ws_endpoint(
                 continue
 
             if message.type == "argument":
-                debate_service.save_argument(
+                argument = debate_service.save_argument(
                     message.debate_id, message.user_id, message.role, message.content
                 )
+                civility = tone_civility_service.analyze_tone_civility(
+                    argument.id, message.content
+                )
                 await debate_service.broadcast(debate_id, message.dict())
+                await debate_service.broadcast(
+                    debate_id,
+                    {
+                        "type": "civility_analysis",
+                        "temp_id": message.temp_id,
+                        "argument_id": argument.id,
+                        "toxicity_score": civility.toxicity_score,
+                        "civility_score": civility.civility_score,
+                        "flags": civility.flags,
+                    },
+                )
 
             else:
                 print(f"Unknown message type: {message.type}")

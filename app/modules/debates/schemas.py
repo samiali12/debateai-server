@@ -44,3 +44,4 @@ class WSMessage(BaseModel):
     content: str
     fullName: str
     timestamp: Optional[str] = None
+    temp_id: str

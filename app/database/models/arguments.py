@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Text, DateTime, Float, Enum
 from sqlalchemy.sql import func
 from database.session import base
 from database.models.enums import DebateRole
+from sqlalchemy.orm import relationship
 
 
 class Arguments(base):
@@ -25,4 +26,11 @@ class Arguments(base):
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
+    )
+
+    civility = relationship(
+        "ArgumentCivilityAnalysis",
+        back_populates="argument",
+        uselist=False,
+        cascade="all, delete-orphan",
     )

@@ -1,6 +1,7 @@
 from modules.arguments.repository import ArgumentsRepository
 from core.response import ApiResponse
 
+
 class ArgumentService:
     def __init__(self):
         self.repo = ArgumentsRepository()
@@ -16,6 +17,9 @@ class ArgumentService:
                 "role": arg.role,
                 "content": arg.content,
                 "timestamp": arg.timestamp.isoformat() if arg.timestamp else None,
+                "toxicity_score": arg.toxicity_score,
+                "civility_score": arg.civility_score,
+                "flags": arg.flags,
             }
             for arg in arguments
         ]

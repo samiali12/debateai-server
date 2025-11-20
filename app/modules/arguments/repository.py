@@ -3,6 +3,8 @@ from fastapi import HTTPException
 from database.models.debates import Debates
 from database.models.arguments import Arguments
 from database.models.users import Users
+from database.models.argument_civility_analysis import ArgumentCivilityAnalysis
+
 
 class ArgumentsRepository:
     def __init__(self):
@@ -21,9 +23,18 @@ class ArgumentsRepository:
                 Arguments.role,
                 Arguments.content,
                 Arguments.created_at.label("timestamp"),
+                ArgumentCivilityAnalysis.toxicity_score,
+                ArgumentCivilityAnalysis.civility_score,
+                ArgumentCivilityAnalysis.flags,
             )
             .join(Users, Users.id == Arguments.user_id)
+            .outerjoin(
+                ArgumentCivilityAnalysis,
+                ArgumentCivilityAnalysis.argument_id == Arguments.id,
+            )
             .filter(Arguments.debate_id == debate.id)
+            .order_by(Arguments.created_at.asc())
             .all()
         )
+        print("ist ==> ", arguments)
         return arguments
