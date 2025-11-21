@@ -12,12 +12,15 @@ from modules.debates.schemas import (
 )
 from modules.tone_civility.service import ToneCivilityService
 from modules.ai_moderator.service import AiModeratorService
+from modules.credibility_scoring.service import CredibilityScoringService
+from modules.credibility_scoring.schema import ArgumentInput
 
 router = APIRouter(prefix="/debates", tags=["debates"])
 
 debate_service = DebateService()
 tone_civility_service = ToneCivilityService()
 ai_moderator_service = AiModeratorService()
+credibility_scoring_service = CredibilityScoringService()
 
 
 @router.post("/")
@@ -120,6 +123,15 @@ async def debate_ws_endpoint(
                     message.debate_id, message.user_id, message.role, message.content
                 )
 
+                score = credibility_scoring_service.score_argument(
+                    ArgumentInput(
+                        argument_id=argument.id,
+                        participant_id=message.user_id,
+                        debate_id=message.debate_id,
+                        text=message.content,
+                    )
+                )
+
                 civility = tone_civility_service.analyze_tone_civility(
                     argument.id, message.content
                 )
@@ -129,6 +141,20 @@ async def debate_ws_endpoint(
                     ai_analysis = ai_moderator_service.analyze_text(message.content)
 
                 await debate_service.broadcast(debate_id, message.dict())
+
+                await debate_service.broadcast(
+                    debate_id,
+                    {
+                        "type": "credibility_score",
+                        "temp_id": message.temp_id,
+                        "argument_id": argument.id,
+                        "relevance_score": score.relevance_score,
+                        "evidence_score": score.evidence_score,
+                        "consistency_score": score.consistency_score,
+                        "overall_strength": score.overall_strength,
+                        "notes": score.notes,
+                    },
+                )
 
                 if civility.toxicity_score > 0.50:
                     await debate_service.broadcast(

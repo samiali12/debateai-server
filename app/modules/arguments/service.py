@@ -20,6 +20,10 @@ class ArgumentService:
                 "toxicity_score": arg.toxicity_score,
                 "civility_score": arg.civility_score,
                 "flags": arg.flags,
+                "relevance_score": arg.relevance_score,
+                "evidence_score": arg.evidence_score,
+                "consistency_score": arg.consistency_score,
+                "overall_strength": arg.consistency_score,
             }
             for arg in arguments
         ]

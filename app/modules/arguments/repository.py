@@ -4,6 +4,7 @@ from database.models.debates import Debates
 from database.models.arguments import Arguments
 from database.models.users import Users
 from database.models.argument_civility_analysis import ArgumentCivilityAnalysis
+from database.models.argument_scores import ArgumentScores
 
 
 class ArgumentsRepository:
@@ -26,15 +27,19 @@ class ArgumentsRepository:
                 ArgumentCivilityAnalysis.toxicity_score,
                 ArgumentCivilityAnalysis.civility_score,
                 ArgumentCivilityAnalysis.flags,
+                ArgumentScores.relevance_score,
+                ArgumentScores.consistency_score,
+                ArgumentScores.evidence_score,
+                ArgumentScores.overall_strength,
             )
             .join(Users, Users.id == Arguments.user_id)
             .outerjoin(
                 ArgumentCivilityAnalysis,
                 ArgumentCivilityAnalysis.argument_id == Arguments.id,
             )
+            .outerjoin(ArgumentScores, ArgumentScores.argument_id == Arguments.id)
             .filter(Arguments.debate_id == debate.id)
             .order_by(Arguments.created_at.asc())
             .all()
         )
-        print("ist ==> ", arguments)
         return arguments

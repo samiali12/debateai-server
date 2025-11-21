@@ -17,6 +17,7 @@ from database.models.feedback import Feedback
 from database.models.participants import Participants
 from database.models.summaries import Summaries
 from database.models.argument_civility_analysis import ArgumentCivilityAnalysis
+from database.models.argument_scores import ArgumentScores
 
 from modules.auth.controller import router as auth_router
 from modules.debates.controller import router as debates_router
@@ -25,6 +26,7 @@ from modules.argument_segmentation.controller import router as segment_router
 from modules.summerization.controller import router as summarization_router
 from modules.tone_civility.controller import router as tone_civility_router
 from modules.ai_moderator.controller import router as ai_moderator_router
+from modules.credibility_scoring.controller import router as credivility_scoring_router
 
 
 @asynccontextmanager
@@ -62,6 +64,7 @@ app.include_router(segment_router)
 app.include_router(summarization_router)
 app.include_router(tone_civility_router)
 app.include_router(ai_moderator_router)
+app.include_router(credivility_scoring_router)
 
 
 @app.get("/test")

@@ -34,3 +34,5 @@ class Arguments(base):
         uselist=False,
         cascade="all, delete-orphan",
     )
+
+    score = relationship("ArgumentScores", uselist=False, back_populates="argument")
