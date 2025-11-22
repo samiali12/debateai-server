@@ -27,6 +27,7 @@ from modules.summerization.controller import router as summarization_router
 from modules.tone_civility.controller import router as tone_civility_router
 from modules.ai_moderator.controller import router as ai_moderator_router
 from modules.credibility_scoring.controller import router as credivility_scoring_router
+from modules.engagement_analysis.controller import router as engagement_analysis
 
 
 @asynccontextmanager
@@ -65,6 +66,7 @@ app.include_router(summarization_router)
 app.include_router(tone_civility_router)
 app.include_router(ai_moderator_router)
 app.include_router(credivility_scoring_router)
+app.include_router(engagement_analysis)
 
 
 @app.get("/test")
