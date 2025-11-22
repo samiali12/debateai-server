@@ -13,6 +13,9 @@ from database.models import summaries
 from database.models import debates
 from database.models import feedback
 from database.models import participants
+from database.models import argument_civility_analysis
+from database.models import argument_scores
+from database.models import consensus_recommendations
 
 
 from logging.config import fileConfig

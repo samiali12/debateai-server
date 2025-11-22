@@ -18,6 +18,7 @@ from database.models.participants import Participants
 from database.models.summaries import Summaries
 from database.models.argument_civility_analysis import ArgumentCivilityAnalysis
 from database.models.argument_scores import ArgumentScores
+from database.models.consensus_recommendations import ConsensusRecommendation
 
 from modules.auth.controller import router as auth_router
 from modules.debates.controller import router as debates_router
@@ -28,6 +29,7 @@ from modules.tone_civility.controller import router as tone_civility_router
 from modules.ai_moderator.controller import router as ai_moderator_router
 from modules.credibility_scoring.controller import router as credivility_scoring_router
 from modules.engagement_analysis.controller import router as engagement_analysis
+from modules.consensus.controller import router as consensus
 
 
 @asynccontextmanager
@@ -67,7 +69,7 @@ app.include_router(tone_civility_router)
 app.include_router(ai_moderator_router)
 app.include_router(credivility_scoring_router)
 app.include_router(engagement_analysis)
-
+app.include_router(consensus)
 
 @app.get("/test")
 def home():
