@@ -6,12 +6,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
 from database.session import base
 
 from database.models import users
-from database.models import analysis
 from database.models import argument_segments
 from database.models import arguments
 from database.models import summaries
 from database.models import debates
-from database.models import feedback
 from database.models import participants
 from database.models import argument_civility_analysis
 from database.models import argument_scores

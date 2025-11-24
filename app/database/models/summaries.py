@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Text, String, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, String, DateTime
 from sqlalchemy.sql import func
 from database.session import base
 
@@ -10,8 +10,7 @@ class Summaries(base):
     debate_id = Column(
         Integer, ForeignKey("debates.id", ondelete="CASCADE"), nullable=False
     )
-    summary_text = Column(Text, nullable=False)
-    generated_by = Column(String(50), default="AI Engine", nullable=False)
+    download_url = Column(String(200), nullable=True)
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

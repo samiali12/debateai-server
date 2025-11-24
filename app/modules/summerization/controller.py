@@ -11,3 +11,7 @@ summerizerization_service = SummerizationService()
 @router.get("/debates/{debate_id}/summarize")
 async def summarize_debate(debate_id: int, user: dict = Depends(is_authenticated)):
     return summerizerization_service.generate_summary(debate_id)
+
+@router.get("/debates/{debate_id}/summarize/report")
+async def download_summarize_debate(debate_id: int, user: dict = Depends(is_authenticated)):
+    return summerizerization_service.get_summary(debate_id)

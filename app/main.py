@@ -11,9 +11,7 @@ from fastapi.exceptions import RequestValidationError
 
 from database.models.users import Users
 from database.models.debates import Debates
-from database.models.analysis import Analysis
 from database.models.arguments import Arguments
-from database.models.feedback import Feedback
 from database.models.participants import Participants
 from database.models.summaries import Summaries
 from database.models.argument_civility_analysis import ArgumentCivilityAnalysis
@@ -30,7 +28,6 @@ from modules.ai_moderator.controller import router as ai_moderator_router
 from modules.credibility_scoring.controller import router as credivility_scoring_router
 from modules.engagement_analysis.controller import router as engagement_analysis
 from modules.consensus.controller import router as consensus
-
 
 @asynccontextmanager
 async def startup_event(app: FastAPI):
