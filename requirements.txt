@@ -1,12 +1,46 @@
-argon2==0.1.10
-celery==5.5.3
-fastapi==0.122.0
-nltk==3.4.5
-numpy==2.3.5
-pydantic==2.12.5
+fastapi==0.118.1
+uvicorn==0.37.0
+
+# Database
+SQLAlchemy==2.0.43
+PyMySQL==1.1.2
+alembic==1.16.5
+
+# Authentication & Security
 PyJWT==2.10.1
-python-dotenv==1.2.1
+pwdlib==0.2.1
+python-multipart==0.0.20
+email-validator==2.3.0
+
+# Environment & Settings
+python-dotenv==1.1.1
+pydantic==2.12.4
+pydantic-settings==2.11.0
+
+# Celery + Redis (Background tasks)
+celery==5.5.3
+redis==6.4.0
+
+# NLP + AI Models
+transformers==4.57.1
+sentence-transformers==5.1.2
+torch==2.9.1+cpu
+scikit-learn==1.7.2
+nltk==3.9.2
+
+# Report Generation (PDF)
 reportlab==4.4.5
-sentence_transformers==5.1.2
-SQLAlchemy==2.0.44
-transformers==4.57.3
+
+# Supabase (Storage, Analytics)
+supabase==2.24.0
+supabase-auth==2.24.0
+supabase-functions==2.24.0
+postgrest==2.24.0
+storage3==2.24.0
+realtime==2.24.0
+
+# Utilities
+requests==2.32.5
+python-dateutil==2.9.0.post0
+tqdm==4.67.1
+regex==2025.9.18
