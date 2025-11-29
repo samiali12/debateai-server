@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile 
+    container_name: debate_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+      - redis
+    env_file:
+      - .env 
+    restart: always 
+
+  celery_worker:
+    build: 
+      context: . 
+      dockerfile: Dockerfile
+    container_name: debate_celery_worker 
+    command: celery -A app.tasks.celery_app worker --loglevel=info
+    depends_on:
+      - api 
+      - redis  
+    env_file:
+      - .env
+    restart: always
+
+  redis:
+    image: redis:7
+    container_name: debate_redis 
+    ports:
+      - "6379:6379"
+    restart: always
+  
+  mysql:
+    image: mysql:8 
+    container_name: debate_mysql 
+    env_file:
+      - .env 
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+
+volumes:
+  mysql_data:
+
